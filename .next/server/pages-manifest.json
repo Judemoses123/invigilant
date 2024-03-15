@@ -1,0 +1,9 @@
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/test/[testId]": "pages/test/[testId].js",
+  "/api/getUser": "pages/api/getUser.js",
+  "/api/postPicture": "pages/api/postPicture.js",
+  "/api/getCreatedTests": "pages/api/getCreatedTests.js"
+}
