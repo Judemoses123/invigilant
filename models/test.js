@@ -39,6 +39,22 @@ const testSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User",
       },
+      flags: Number,
+      flaggedInstances: [
+        {
+          flagType: {
+            type: String,
+            required: true,
+          },
+          timestamp: {
+            type: Number,
+            required: true,
+          },
+          image: {
+            type: String,
+          },
+        },
+      ],
       questions: [Object],
       startTime: Number,
       endTime: Number,

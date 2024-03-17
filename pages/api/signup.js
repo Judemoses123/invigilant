@@ -2,8 +2,8 @@ import connectDB from "../../utils/db/db";
 import User from "../../models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+await connectDB();
 export default async function signup(req, res) {
-  await connectDB();
   if (req.method !== "POST") {
     return res
       .status(405)

@@ -27,6 +27,16 @@
       "static/chunks/main.js",
       "static/chunks/pages/dashboard.js"
     ],
+    "/my-tests": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/my-tests.js"
+    ],
+    "/responses/[testId]": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/responses/[testId].js"
+    ],
     "/test/[testId]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",

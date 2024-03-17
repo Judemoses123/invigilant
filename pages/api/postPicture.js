@@ -2,36 +2,76 @@ import authenticate from "../../middlewares/authentication";
 import * as faceapi from "face-api.js";
 import connectDB from "../../utils/db/db";
 import { createCanvas, loadImage } from "canvas";
+import Test from "../../models/test";
 
-await faceapi.nets.ssdMobilenetv1.loadFromUri(
+await faceapi.nets.tinyFaceDetector.loadFromUri(
   "https://cdn.jsdelivr.net/gh/cgarciagl/face-api.js/weights/"
 );
 
+await connectDB();
 export default async function postPicture(req, res) {
-  await connectDB();
   try {
     await authenticate(req, res);
 
     const imageSrc = req.body.imageSrc;
+    const testId = req.body.testId;
     if (!imageSrc) {
       return res
         .status(400)
         .json({ message: "Image data is missing", status: "failed" });
     }
 
-    const base64Image = imageSrc;
-    const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, "");
+    const base64Data = imageSrc.replace(/^data:image\/\w+;base64,/, "");
 
     const buffer = Buffer.from(base64Data, "base64");
 
     const canvas = await createCanvasFromBase64(buffer);
-    const detections = await faceapi.detectAllFaces(canvas);
+
+    const detections = await faceapi.detectAllFaces(
+      canvas,
+      new faceapi.TinyFaceDetectorOptions({
+        inputSize: 320,
+        scoreThreshold: 0.5,
+      })
+    );
     console.log(detections.length);
+
+    const test = await Test.findById(testId);
+
+    const testSolvedByUser = test.solved.find(
+      (t) => t.userId.toString() === req.user._id.toString()
+    );
+    let currentFlags = 0;
+    if (!!testSolvedByUser.flags) {
+      currentFlags = testSolvedByUser.flags;
+    }
+
+    if (detections.length != 1) {
+      currentFlags++;
+      testSolvedByUser.flags = currentFlags;
+      if (!!testSolvedByUser.flaggedInstances) {
+        testSolvedByUser.flaggedInstances.push({
+          flagType: "Irregular Face Detection",
+          image: imageSrc,
+          timestamp: Date.now(),
+        });
+      } else {
+        testSolvedByUser.flaggedInstances = [
+          {
+            flagType: "Irregular Face Detection",
+            image: imageSrc,
+            timestamp: Date.now(),
+          },
+        ];
+      }
+    }
+
+    await test.save();
 
     return res.status(200).json({
       message: "Image posted successfully",
       status: "success",
-      faces: detections.length,
+      flags: currentFlags,
     });
   } catch (err) {
     console.error(err);

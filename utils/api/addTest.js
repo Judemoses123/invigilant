@@ -1,4 +1,5 @@
 exports.addTest = async (test) => {
+  console.log(test);
   const token = localStorage.getItem("token");
   const response = await fetch(`/api/addTest`, {
     method: "POST",

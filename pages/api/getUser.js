@@ -1,8 +1,8 @@
 import authenticate from "../../middlewares/authentication";
 import connectDB from "../../utils/db/db";
 
+await connectDB();
 export default async function getUser(req, res) {
-  await connectDB();
   if (req.method !== "GET") {
     return res
       .status(405)

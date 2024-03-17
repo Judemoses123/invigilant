@@ -1,7 +1,7 @@
-const postPicture = async (imageSrc) => {
+const postPicture = async (imageSrc, testId) => {
   try {
     const token = localStorage.getItem("token");
-    console.log('SNAP');
+    console.log("SNAP");
     const response = await fetch(`/api/postPicture`, {
       method: "POST",
       headers: {
@@ -10,6 +10,7 @@ const postPicture = async (imageSrc) => {
       },
       body: JSON.stringify({
         imageSrc: imageSrc,
+        testId: testId,
       }),
     });
     if (!response.ok) {
@@ -17,6 +18,7 @@ const postPicture = async (imageSrc) => {
     }
     const data = await response.json();
     console.log(data);
+    return data;
   } catch (err) {
     console.log(err);
   }

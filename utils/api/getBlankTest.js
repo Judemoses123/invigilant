@@ -1,5 +1,4 @@
 const getBlankTest = async (testId) => {
-  console.log(testId);
   const token = localStorage.getItem("token");
   const response = await fetch(`/api/getBlankTest/${testId}`, {
     method: "GET",
@@ -9,7 +8,6 @@ const getBlankTest = async (testId) => {
     },
   });
   const data = await response.json();
-  console.log(data);
   return data;
 };
 export default getBlankTest;

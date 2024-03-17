@@ -2,8 +2,8 @@ import authenticate from "../../middlewares/authentication";
 import Test from "../../models/test";
 import connectDB from "../../utils/db/db";
 
+await connectDB();
 export default async function editTest(req, res) {
-  await connectDB();
   if (req.method != "POST") {
     return res
       .status(405)

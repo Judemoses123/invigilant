@@ -1,4 +1,5 @@
 exports.getCreatedTests = async (test) => {
+  console.log("HEY ");
   const token = localStorage.getItem("token");
   const response = await fetch(`/api/getCreatedTests`, {
     method: "GET",

@@ -2,8 +2,8 @@ import authenticate from "../../../middlewares/authentication";
 import Test from "../../../models/test";
 import connectDB from "../../../utils/db/db";
 
+await connectDB();
 export default async function getBlankTest(req, res) {
-  await connectDB();
   await authenticate(req, res);
   if (req.method !== "GET") {
     return res

@@ -2,8 +2,8 @@ import Test from "../../models/test";
 import authenticate from "../../middlewares/authentication";
 import connectDB from "../../utils/db/db";
 
+await connectDB();
 export default async function addTest(req, res) {
-  await connectDB();
   if (req.method !== "POST") {
     return res
       .status(405)
@@ -11,6 +11,7 @@ export default async function addTest(req, res) {
   }
   await authenticate(req, res);
   try {
+    console.log(req.body);
     const name = req.body.name;
     const hour = req.body.hour;
     const minutes = req.body.minutes;
@@ -22,6 +23,7 @@ export default async function addTest(req, res) {
       duration: duration,
       questions: questions,
     });
+
     await test.save();
 
     const createdTests = req.user.createdTests;
@@ -37,5 +39,8 @@ export default async function addTest(req, res) {
       .json({ message: "test created successfully", status: "success" });
   } catch (error) {
     console.log(error);
+    return res
+      .status(500)
+      .json({ message: "something went wrong", status: "failed" });
   }
 }
