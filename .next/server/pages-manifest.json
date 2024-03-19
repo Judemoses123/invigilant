@@ -2,8 +2,6 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/my-tests": "pages/my-tests.js",
-  "/api/getUser": "pages/api/getUser.js",
-  "/api/getCreatedTests": "pages/api/getCreatedTests.js",
-  "/dashboard": "pages/dashboard.js"
+  "/dashboard": "pages/dashboard.js",
+  "/my-tests": "pages/my-tests.js"
 }
