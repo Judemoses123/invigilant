@@ -16,6 +16,7 @@ import Webcam from "react-webcam";
 import postPicture from "../../utils/api/postPicture";
 import postTabChanged from "../../utils/api/postTabChanged";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
+import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 
 import * as canvas from "canvas";
 
@@ -261,13 +262,13 @@ export default function Test(props) {
         <div className="mr-2 mb-2 h-screen w-screen flex flex-row">
           <div
             style={{ flexDirection: "column" }}
-            className={` bg-gradient-to-b from-[#006baa] to-[#0094c1] h-full overflow-hidden ${
+            className={`bg-white h-full overflow-hidden ${
               !showOverlay ? "w-12" : "w-0 p-0"
             }`}
           >
             <div
               onClick={() => setShowOverlay((prev) => !prev)}
-              className="text-2xl font-bold text-[white] italic w-full bg-[#006baa] h-14 flex items-center justify-center"
+              className="text-2xl font-bold text-slate-500 italic w-full bg-white h-14 flex items-center justify-center"
             >
               <MenuIcon />
             </div>
@@ -355,18 +356,18 @@ export default function Test(props) {
       {!!isLoggedIn && !started && !completed && (
         <div className="mr-2 mb-2 h-screen w-screen flex flex-row">
           <div
-            className={` bg-gradient-to-b from-[#006baa] to-[#0094c1] h-full overflow-hidden box-border ${
+            className={`bg-white h-full overflow-hidden box-border border-r ${
               showOverlay ? "w-1/5 p-2" : "w-0 p-0"
             }`}
           >
-            <div className="text-2xl font-bold text-white italic text-center w-full flex flex-row items-center justify-start mb-2">
+            <div className="text-2xl font-bold text-slate-500 italic text-center w-full flex flex-row items-center justify-start mb-2">
               <div
                 onClick={() => setShowOverlay((prev) => !prev)}
-                className="text-2xl font-bold text-[white] italic flex items-center justify-center p-2 pl-1"
+                className=" w-full flex justify-between flex-row text-2xl font-bold text-slate-500[white] italic items-center p-2 pl-1"
               >
-                <MenuIcon />
+                <span className="pl-4">Invigilant</span>
+                <MenuOpenIcon />
               </div>
-              <span className="pl-4">Invigilant</span>
             </div>
             <div className="bg-white rounded-md overflow-hidden border">
               <Webcam
@@ -378,19 +379,19 @@ export default function Test(props) {
                 minScreenshotWidth={1280}
               />
             </div>
-            <div className="p-2 text-white h-min">
+            <div className="p-2 text-slate-500 h-min">
               <div>{`Candidate : ${name}`}</div>
             </div>
           </div>
           <div
             style={{ flexDirection: "column" }}
-            className={` bg-gradient-to-b from-[#006baa] to-[#0094c1] h-full overflow-hidden ${
+            className={`bg-white  h-full overflow-hidden ${
               !showOverlay ? "w-12" : "w-0 p-0"
             }`}
           >
             <div
               onClick={() => setShowOverlay((prev) => !prev)}
-              className="text-2xl font-bold text-[white] italic w-full bg-[#006baa] h-14 flex items-center justify-center"
+              className="text-2xl font-bold text-slate-500 italic w-full  h-14 flex items-center justify-center"
             >
               <MenuIcon />
             </div>
@@ -445,18 +446,18 @@ export default function Test(props) {
           className="mr-2 mb-2 h-screen w-screen flex flex-row"
         >
           <div
-            className={` bg-gradient-to-b from-[#006baa] to-[#0094c1] h-full overflow-hidden box-border ${
+            className={` bg-white h-full overflow-hidden box-border border-r ${
               showOverlay ? "w-1/5 p-2" : "w-0 p-0"
             }`}
           >
-            <div className="text-2xl font-bold text-white italic text-center w-full flex flex-row items-center justify-start mb-2">
+            <div className="text-2xl border-b font-bold text-slate-500 italic text-center w-full flex flex-row items-center justify-start mb-2">
               <div
                 onClick={() => setShowOverlay((prev) => !prev)}
-                className="text-2xl font-bold text-[white] italic flex items-center justify-center p-2 pl-1"
+                className="text-2xl font-bold text-slate-500 italic flex items-center justify-center p-2 pl-1"
               >
-                <MenuIcon />
+                <MenuOpenIcon />
+                <span className="pl-4">Invigilant</span>
               </div>
-              <span className="pl-4">Invigilant</span>
             </div>
             <div className="bg-white rounded-md overflow-hidden border">
               {/* <video id="video" ref={videoRef} autoPlay playsInline></video> */}
@@ -469,22 +470,22 @@ export default function Test(props) {
                 minScreenshotWidth={1280}
               />
             </div>
-            <div className="p-2 text-white h-min">
+            <div className="p-2 text-slate-500 h-min">
               <div>{`Candidate : ${name}`}</div>
             </div>
-            <div className="p-2 text-white h-min">
+            <div className="p-2 text-slate-500 h-min">
               <div>{`Warning Flags: ${flags}`}</div>
             </div>
           </div>
           <div
             style={{ flexDirection: "column" }}
-            className={` bg-gradient-to-b from-[#006baa] to-[#0094c1] h-full overflow-hidden ${
+            className={`bg-white h-full overflow-hidden ${
               !showOverlay ? "w-12" : "w-0 p-0"
             }`}
           >
             <div
               onClick={() => setShowOverlay((prev) => !prev)}
-              className="text-2xl font-bold text-[white] italic w-full bg-[#006baa] h-14 flex items-center justify-center"
+              className="text-2xl border-b font-bold text-slate-500 italic w-full h-14 flex items-center justify-center"
             >
               <MenuIcon />
             </div>

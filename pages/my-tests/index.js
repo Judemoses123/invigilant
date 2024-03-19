@@ -47,7 +47,7 @@ const myTests = () => {
         <LeftNavbar location="mytest" />
         <div className="flex flex-col w-full">
           <TopNavbar location="My Tests" />
-          <div className="shadow-sm border h-full overflow-auto">
+          <div className="shadow-sm h-full overflow-auto">
             <TestDashboard
               showOptions={true}
               copyToClipboard={copyToClipboard}

@@ -4,6 +4,7 @@ import EmojiEventsOutlinedIcon from "@mui/icons-material/EmojiEventsOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
+import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import Link from "next/link";
 
 import { useState } from "react";
@@ -11,33 +12,32 @@ const LeftNavbar = (props) => {
   const [showNavigation, setShowNavigation] = useState(true);
   return (
     <div
-      className={`w-1/5 p-2 shadow-sm bg-gradient-to-b from-[#006baa] to-[#0094c1] h-screen flex flex-col items-center box-border ${
+      className={`w-1/5 p-2 shadow-sm bg-white border-r h-screen flex flex-col items-center box-border ${
         showNavigation ? "w-1/5" : "w-min"
       }`}
     >
       {showNavigation && (
         <div
           onClick={() => setShowNavigation((prev) => !prev)}
-          className="w-full text-2xl font-bold text-white flex justify-evenly items-center mb-4 "
+          className="w-full text-2xl font-bold text-slate-500 flex justify-between border-b pb-2 pl-2 gap-4 items-center mb-4 "
         >
-          <MenuOutlinedIcon />
           <span>Invigilant</span>
+          <MenuOpenIcon />
         </div>
       )}
       {!showNavigation && (
         <div
           onClick={() => setShowNavigation((prev) => !prev)}
-          className="w-full text-2xl font-bold text-white italic text-center mb-4"
+          className="w-full text-2xl font-bold text-slate-500 border-b pb-2 italic text-center mb-4"
         >
           <MenuOutlinedIcon />
         </div>
       )}
-      <div className="text-white mt-4 w-full flex flex-col text-[14px] h-96 justify-evenly">
+      <div className=" text-slate-500 mt-4 w-full flex flex-col text-[14px] h-64 justify-evenly">
         <Link
           href={`/dashboard`}
           className={`items-center p-2  rounded-md flex  gap-2 ${
-            props.location === "dashboard" &&
-            "bg-gradient-to-br from-[#ffffff30] to-[#ffffff18]"
+            props.location === "dashboard" && "text-blue-500"
           } ${showNavigation ? "flex-row" : "flex-col text-xs"}`}
         >
           <DashboardOutlinedIcon />
@@ -46,8 +46,7 @@ const LeftNavbar = (props) => {
         <Link
           href={"/my-tests"}
           className={`items-center p-2  rounded-md flex gap-2 ${
-            props.location === "mytest" &&
-            "bg-gradient-to-br from-[#ffffff30] to-[#ffffff18]"
+            props.location === "mytest" && "text-blue-500"
           } ${showNavigation ? "flex-row" : "flex-col text-xs"}`}
         >
           <TextSnippetOutlinedIcon />
@@ -56,8 +55,7 @@ const LeftNavbar = (props) => {
         <Link
           href={`/createTest`}
           className={`items-center p-2  rounded-md flex text-center gap-2 ${
-            props.location === "createTest" &&
-            "bg-gradient-to-br from-[#ffffff30] to-[#ffffff18]"
+            props.location === "createTest" && "text-blue-500"
           } ${showNavigation ? "flex-row" : "flex-col text-xs"}`}
         >
           <EditNoteOutlinedIcon />

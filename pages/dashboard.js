@@ -69,8 +69,8 @@ const dashboard = () => {
               <div className=" w-full h-min border shadow-sm rounded-md mb-2 bg-white">
                 <Link href={"/createTest"} className="border p-2 flex flex-row">
                   <div className=" items-center gap-2 flex flex-row">
-                    <NoteAddIcon className="text-[#007eb5]" />
-                    <button className="text-[#007eb5]">Create Test</button>
+                    <NoteAddIcon className="text-blue-500" />
+                    <button className="text-blue-500">Create Test</button>
                   </div>
                 </Link>
               </div>

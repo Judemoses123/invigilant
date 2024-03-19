@@ -2,6 +2,10 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
+  "/": "pages/index.js",
   "/dashboard": "pages/dashboard.js",
-  "/my-tests": "pages/my-tests.js"
+  "/responses/[testId]": "pages/responses/[testId].js",
+  "/api/getUser": "pages/api/getUser.js",
+  "/api/getResponses/[testId]": "pages/api/getResponses/[testId].js",
+  "/api/getCreatedTests": "pages/api/getCreatedTests.js"
 }
