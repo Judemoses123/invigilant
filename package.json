@@ -17,6 +17,7 @@
     "bcrypt": "^5.1.1",
     "canvas": "^2.6.1",
     "face-api.js": "^0.22.2",
+    "image-output": "^2.4.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.1",
     "next": "14.0.1",

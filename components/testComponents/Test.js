@@ -110,7 +110,7 @@ export default function Test(props) {
   useEffect(() => {
     if (isLoggedIn && !!props.test) {
       setInterval(async () => {
-        if (started && isLoggedIn && !!props.test && !completed) {
+        if (isLoggedIn && !!props.test && !completed) {
           const response = await capture();
           if (!!response && response.status == "success") {
             setFlags(response.flags);
@@ -466,8 +466,8 @@ export default function Test(props) {
                 screenshotFormat="image/jpeg"
                 ref={webcamRef}
                 screenshotQuality={0.3}
-                minScreenshotHeight={720}
-                minScreenshotWidth={1280}
+                minScreenshotHeight={320}
+                minScreenshotWidth={720}
               />
             </div>
             <div className="p-2 text-slate-500 h-min">

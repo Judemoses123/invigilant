@@ -2,6 +2,7 @@ import authenticate from "../../middlewares/authentication";
 import * as faceapi from "face-api.js";
 import connectDB from "../../utils/db/db";
 import { createCanvas, loadImage } from "canvas";
+import output from "image-output";
 import Test from "../../models/test";
 
 await faceapi.nets.tinyFaceDetector.loadFromUri(

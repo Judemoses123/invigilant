@@ -3,8 +3,8 @@ import authenticate from "../../middlewares/authentication";
 import Test from "../../models/test";
 import User from "../../models/user";
 import connectDB from "../../utils/db/db";
+await connectDB();
 export default async function getCreatedTests(req, res) {
-  await connectDB();
   console, log(req.body);
   try {
     if (req.method !== "GET") {
