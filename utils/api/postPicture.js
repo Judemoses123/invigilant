@@ -2,6 +2,7 @@ const postPicture = async (imageSrc, testId) => {
   try {
     const token = localStorage.getItem("token");
     console.log("SNAP");
+
     const response = await fetch(`/api/postPicture`, {
       method: "POST",
       headers: {

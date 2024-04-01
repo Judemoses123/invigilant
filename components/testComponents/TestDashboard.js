@@ -15,7 +15,7 @@ const TestDashboard = (props) => {
           const hours = Math.floor(test.testId.duration / 60);
           const minutes = test.testId.duration % 60;
           return (
-            <li className="flex flex-col border-b p-2 gap-1 text-sm  rounded-md border-2 shadow-sm bg-white">
+            <li className="flex flex-col border-b p-2 gap-1 text-sm  rounded-md border bg-white">
               <div className="flex flex-row w-full justify-between mb-2">
                 <div className=" flex flex-col">
                   <span className="text-base col-span-2 font-semibold ">
@@ -46,7 +46,7 @@ const TestDashboard = (props) => {
                 <button
                   onClick={() =>
                     props.copyToClipboard(
-                      `http://localhost:3000/test/${test.testId._id}`
+                      `https://invigilant-test.vercel.app/test/${test.testId._id}`
                     )
                   }
                   className="flex flex-row gap-2 items-center justify-start  p-2 pl-4 border row-span-1"

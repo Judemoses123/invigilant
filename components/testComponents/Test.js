@@ -18,13 +18,10 @@ import postTabChanged from "../../utils/api/postTabChanged";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 
-import * as canvas from "canvas";
 
 import * as faceapi from "face-api.js";
 import getUserAsync from "../../store/asyncThunks/getUserAsync";
 
-const { Canvas, Image, ImageData } = canvas;
-faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
 
 const videoConstraints = {
   width: 1280,

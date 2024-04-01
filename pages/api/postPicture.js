@@ -2,8 +2,9 @@ import authenticate from "../../middlewares/authentication";
 import * as faceapi from "face-api.js";
 import connectDB from "../../utils/db/db";
 import { createCanvas, loadImage } from "canvas";
-import output from "image-output";
 import Test from "../../models/test";
+import jsdom from "jsdom";
+const { JSDOM } = jsdom;
 
 await faceapi.nets.tinyFaceDetector.loadFromUri(
   "https://cdn.jsdelivr.net/gh/cgarciagl/face-api.js/weights/"
@@ -13,7 +14,7 @@ await connectDB();
 export default async function postPicture(req, res) {
   try {
     await authenticate(req, res);
-
+    
     const imageSrc = req.body.imageSrc;
     const testId = req.body.testId;
     if (!imageSrc) {
@@ -83,7 +84,7 @@ export default async function postPicture(req, res) {
 }
 
 async function createCanvasFromBase64(buffer) {
-  const canvas = createCanvas();
+  const canvas = createCanvas(300, 320);
   const ctx = canvas.getContext("2d");
 
   const img = await loadImage(buffer);
@@ -92,6 +93,6 @@ async function createCanvasFromBase64(buffer) {
   canvas.height = img.height;
 
   ctx.drawImage(img, 0, 0);
-
+  console.log(canvas);
   return canvas;
 }
