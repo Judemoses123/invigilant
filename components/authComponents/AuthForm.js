@@ -42,7 +42,7 @@ const AuthForm = (props) => {
     console.log(signupData);
     const response = await dispatch(signupAsync(signupData));
     console.log(response);
-    if (response.payload.status === "success" && !!props.redirect) {
+    if (response.payload.status === "success" && props.redirect) {
       router.push("/dashboard");
     } else {
       setError(response.payload.message);
@@ -59,7 +59,7 @@ const AuthForm = (props) => {
     console.log(loginData);
     const response = await dispatch(loginAsync(loginData));
     console.log(response);
-    if (response.payload.status === "success" && !!props.redirect) {
+    if (response.payload.status === "success" && props.redirect) {
       router.push("/dashboard");
     } else {
       setError(response.payload.message);

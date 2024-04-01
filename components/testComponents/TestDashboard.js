@@ -54,7 +54,7 @@ const TestDashboard = (props) => {
                   <button
                     onClick={() =>
                       props.copyToClipboard(
-                        `https://invigilant-test.vercel.app/test/${test.testId._id}`
+                        `https://invigilant.vercel.app/test/${test.testId._id}`
                       )
                     }
                     className="flex flex-row gap-2 items-center justify-start  p-2 pl-4 border row-span-1"
