@@ -7,6 +7,10 @@ import { useDispatch } from "react-redux";
 import LeftNavbar from "../../components/navigationComponents/LeftNavbar";
 import { useRouter } from "next/router";
 import FlaggedInstanceDisplay from "../../components/responseComponents/FlaggedInstanceDisplay";
+import * as React from "react";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+
 const response = () => {
   const params = useParams();
   const [testId, setTestId] = useState(null);
@@ -15,6 +19,7 @@ const response = () => {
   const dispatch = useDispatch();
   const [mode, setMode] = useState("questions");
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   console.log(router.asPath.split("/")[1]);
 
   useEffect(() => {
@@ -30,11 +35,13 @@ const response = () => {
   }, [params]);
   useEffect(() => {
     async function getResponsesFetcher() {
+      setLoading(true);
       if (testId) {
         const response = await getResponses(testId);
         console.log(response);
         if ((response.status = "success")) setTest(response.test);
       }
+      setLoading(false);
     }
 
     getResponsesFetcher();
@@ -48,6 +55,13 @@ const response = () => {
           <div className="w-1/3 border h-full overflow-hidden pb-10 shadow-md rounded-md bg-white">
             <div className="p-2 border-b">All Responses</div>
             <ul className="h-full overflow-auto">
+              {loading && (
+                <div className="w-full text-sm flex items-center justify-center m-4">
+                  <Box sx={{ display: "flex" }}>
+                    <CircularProgress />
+                  </Box>
+                </div>
+              )}
               {test &&
                 test.solved.map((t, index) => {
                   return (

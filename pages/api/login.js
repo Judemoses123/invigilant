@@ -12,9 +12,7 @@ export default async function login(req, res) {
   const email = req.body.email;
   const password = req.body.password;
   if (!email || !password) {
-    return res
-      .status(401)
-      .json({ message: "invalid inuput", status: "failed" });
+    return res.status(401).json({ message: "invalid input", status: "failed" });
   }
 
   const existingUser = await User.findOne({ email: email });

@@ -11,7 +11,7 @@ export default function App({ Component, pageProps }) {
   return (
     <main className={`${nunito.className} h-screen`}>
       <Provider store={store}>
-        <NextTopLoader />
+        <NextTopLoader showSpinner={false} color="#3b82f6" easing="ease" />
         <Component {...pageProps} />
       </Provider>
     </main>

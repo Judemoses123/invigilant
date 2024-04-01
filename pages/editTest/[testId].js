@@ -69,6 +69,7 @@ const editTest = () => {
     }
     fetchTest();
   }, [params]);
+
   return (
     <div className="flex flex-row h-full overflow-y-auto">
       <LeftNavbar />
@@ -76,10 +77,13 @@ const editTest = () => {
         <TopNavbar />
         <div className="h-full overflow-y-auto flex flex-row mb-10 pb-10">
           <CreateTestForm
-            editing={editing}
+            editing={true}
             addQuestion={addQuestion}
             question={editing ? questions[editIndex] : null}
             getEditedQuestion={getEditedQuestion}
+            questions={questions}
+            getTestData={getTestData}
+            test={test}
           />
           <TestDisplay
             editing={true}
@@ -87,7 +91,6 @@ const editTest = () => {
             editHandler={editHandler}
             deleteHandler={deleteHandler}
             questions={questions}
-            getTestData={getTestData}
           />
         </div>
       </div>

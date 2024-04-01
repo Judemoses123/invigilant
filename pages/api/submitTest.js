@@ -12,7 +12,6 @@ export default async function submitTest(req, res) {
   }
   await authenticate(req, res);
   try {
-    console.log(req.body.testId);
     const test = await Test.findById(req.body.testId);
     const testSolvedByUser = test.solved.find((t) => {
       return t.userId.toString() === req.user._id.toString();
@@ -25,7 +24,6 @@ export default async function submitTest(req, res) {
     } else {
       testSolvedByUser.endTime = Date.now();
       await test.save();
-      console.log(testSolvedByUser);
       return res.status(200).json({
         message: "test submitted successfully",
         status: "success",

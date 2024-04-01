@@ -6,10 +6,14 @@ import { useDispatch } from "react-redux";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import TopNavbar from "../../components/navigationComponents/TopNavbar";
 import TestDashboard from "../../components/testComponents/TestDashboard";
+import * as React from "react";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
 const myTests = () => {
   const [createdTests, setCreatedTests] = useState([]);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const copyToClipboard = (text) => {
@@ -28,10 +32,12 @@ const myTests = () => {
 
   useEffect(() => {
     async function fetchTests() {
+      setLoading(true);
       dispatch(getUserAsync());
       const response = await getCreatedTests();
       console.log(response);
       setCreatedTests(response.createdTests);
+      setLoading(false);
     }
     fetchTests();
   }, []);
@@ -48,6 +54,13 @@ const myTests = () => {
         <div className="flex flex-col w-full">
           <TopNavbar location="My Tests" />
           <div className="shadow-sm h-full overflow-auto">
+            {loading && (
+              <div className="w-full text-sm flex items-center justify-center m-4">
+                <Box sx={{ display: "flex" }}>
+                  <CircularProgress />
+                </Box>
+              </div>
+            )}
             <TestDashboard
               showOptions={true}
               copyToClipboard={copyToClipboard}

@@ -19,16 +19,16 @@ const LeftNavbar = (props) => {
       {showNavigation && (
         <div
           onClick={() => setShowNavigation((prev) => !prev)}
-          className="w-full text-2xl font-bold text-slate-500 flex justify-between border-b pb-2 pl-2 gap-4 items-center mb-4 "
+          className="w-full text-2xl font-bold text-blue-500 flex justify-between border-b pb-2 pl-2 gap-4 items-center mb-4 "
         >
-          <span>Invigilant</span>
+          <span >Invigilant</span>
           <MenuOpenIcon />
         </div>
       )}
       {!showNavigation && (
         <div
           onClick={() => setShowNavigation((prev) => !prev)}
-          className="w-full text-2xl font-bold text-slate-500 border-b pb-2 italic text-center mb-4"
+          className="w-full text-2xl font-bold text-blue-500 border-b pb-2 italic text-center mb-4"
         >
           <MenuOutlinedIcon />
         </div>

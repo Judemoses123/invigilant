@@ -1,6 +1,7 @@
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useEffect, useRef, useState } from "react";
+import PreviewIcon from "@mui/icons-material/Preview";
 export default function TestDisplay(props) {
   const [name, setName] = useState("New Test");
   const [hour, setHour] = useState(0);
@@ -14,10 +15,6 @@ export default function TestDisplay(props) {
   const deleteHandler = (index) => {
     console.log(index);
     props.deleteHandler(index);
-  };
-
-  const getTestData = () => {
-    props.getTestData({ name: name, hour: hour, minutes: minutes });
   };
 
   useEffect(() => {
@@ -36,84 +33,9 @@ export default function TestDisplay(props) {
 
   return (
     <div className="border mr-2 mt-2 mb-2 w-full h-fit shadow-sm rounded-md bg-white">
-      <div className=" p-2 flex flex-row justify-between border-b">
-        {!props.editing && (
-          <input
-            onChange={(e) => setName(e.target.value)}
-            type="text"
-            defaultValue={"New Test"}
-            contentEditable={true}
-            placeholder="Test Name"
-            className="p-1 rounded-sm bg-slate-50 border"
-          />
-        )}
-        {props.editing && (
-          <input
-            onChange={(e) => setName(e.target.value)}
-            type="text"
-            value={name}
-            contentEditable={true}
-            placeholder="Test Name"
-            className="p-1 rounded-sm bg-slate-50 border"
-          />
-        )}
-        <div className="flex flex-row gap-2 items-center">
-          <span className="">Duration:</span>
-          {!props.editing && (
-            <select
-              name="hour"
-              id="hour"
-              onChange={(e) => setHour(e.target.value)}
-            >
-              <option value="0">0 Hour</option>
-              <option value="1">1 Hour</option>
-              <option value="2">2 Hour</option>
-              <option value="3">3 Hour</option>
-            </select>
-          )}
-          {props.editing && (
-            <select
-              name="hour"
-              id="hour"
-              onChange={(e) => setHour(e.target.value)}
-              value={hour}
-            >
-              <option value="0">0 Hour</option>
-              <option value="1">1 Hour</option>
-              <option value="2">2 Hour</option>
-              <option value="3">3 Hour</option>
-            </select>
-          )}
-          {!props.editing && (
-            <select
-              name="minute"
-              id="minute"
-              onChange={(e) => setMinutes(e.target.value)}
-            >
-              <option value="0">0 Minutes</option>
-              <option value="10">10 Minutes</option>
-              <option value="20">20 Minutes</option>
-              <option value="30">30 Minutes</option>
-              <option value="40">40 Minutes</option>
-              <option value="50">50 Minutes</option>
-            </select>
-          )}
-          {props.editing && (
-            <select
-              name="minute"
-              id="minute"
-              onChange={(e) => setMinutes(e.target.value)}
-              value={minutes}
-            >
-              <option value="0">0 Minutes</option>
-              <option value="10">10 Minutes</option>
-              <option value="20">20 Minutes</option>
-              <option value="30">30 Minutes</option>
-              <option value="40">40 Minutes</option>
-              <option value="50">50 Minutes</option>
-            </select>
-          )}
-        </div>
+      <div className=" p-2 flex flex-row justify-start gap-2 border-b">
+        <PreviewIcon className=" text-blue-500" />
+        <span>Preview</span>
       </div>
       <div className="h-fit bg-white">
         {props.questions.map((question, qIndex) => {
@@ -147,7 +69,7 @@ export default function TestDisplay(props) {
                         className={`pl-2 pr-2 bg-slate-50 border rounded-md 
                         ${
                           index == Number(question.correctOption) - 1
-                            ? "text-green-500"
+                            ? "text-green-500 bg-green-500 border-green-500"
                             : "text-black"
                         }
                         `}
@@ -161,30 +83,6 @@ export default function TestDisplay(props) {
           );
         })}
       </div>
-      {props.questions.length > 0 && (
-        <div className="p-2 flex flex-row">
-          <div>
-            {!props.editing && (
-              <button
-                type="button"
-                onClick={getTestData}
-                className="p-2 bg-green-500 text-white rounded-md"
-              >
-                Create Test
-              </button>
-            )}
-            {props.editing && (
-              <button
-                type="button"
-                onClick={getTestData}
-                className="p-2 bg-green-500 text-white rounded-md"
-              >
-                Edit Test
-              </button>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -2,9 +2,17 @@ import { useEffect, useRef, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+
 export default function CreateTestForm(props) {
   const [mode, setMode] = useState("mcq");
-  const [showQuestionForm, setQuestionForm] = useState(false);
+  const [showQuestionForm, setShowQuestionForm] = useState(false);
+  const [showTimingForm, setShowTimingForm] = useState(false);
+  const [name, setName] = useState("New Test");
+  const [hour, setHour] = useState(0);
+  const [duration, setDuration] = useState(
+    !!props.test ? props.test.duration : 60
+  );
+  const [minutes, setMinutes] = useState(0);
   const [question, setQuestion] = useState({
     type: "mcq",
     questionText: "",
@@ -12,61 +20,62 @@ export default function CreateTestForm(props) {
     correctOption: 1,
     points: 0,
   });
-  const toggleMode = () => {
-    setMode((prev) => {
-      if (prev === "mcq") {
-        setQuestion({
-          type: "desc",
-          questionText: "",
-          points: question.points,
-        });
-        return "desc";
-      }
-      setQuestion({
-        type: "mcq",
-        questionText: "",
-        options: [""],
-        correctOption: 1,
-        points: question.points,
-      });
-      return "mcq";
-    });
-  };
+
   const questionRef = useRef();
   const pointsInputRef = useRef();
 
+  const toggleMode = () => {
+    setMode((prevMode) => (prevMode === "mcq" ? "desc" : "mcq"));
+    setQuestion((prevQuestion) => ({
+      ...prevQuestion,
+      type: mode === "mcq" ? "desc" : "mcq",
+      questionText: "",
+      options: mode === "mcq" ? [""] : [],
+    }));
+  };
+
   const questionTextHandler = () => {
-    setQuestion((prev) => {
-      return { ...prev, questionText: questionRef.current.value };
-    });
+    setQuestion((prevQuestion) => ({
+      ...prevQuestion,
+      questionText: questionRef.current.value,
+    }));
   };
+
   const addOptionHandler = () => {
-    setQuestion((prev) => {
-      const newOptions = [...prev.options, ""];
-      return { ...prev, options: newOptions };
-    });
+    setQuestion((prevQuestion) => ({
+      ...prevQuestion,
+      options: [...prevQuestion.options, ""],
+    }));
   };
+
   const editOptionHandler = (e) => {
-    if (!props.editing) {
-      const id = e.target.id;
-      setQuestion((prev) => {
-        const prevOptions = prev.options;
-        prevOptions[id - 1] = e.target.value;
-        return { ...prev, options: prevOptions };
-      });
-    }
-  };
-  const deleteOption = (id) => {
-    setQuestion((prev) => {
-      let prevOptions = [...prev.options];
-      prevOptions.splice(Number(id) - 1, 1);
-      return { ...prev, options: prevOptions };
+    const id = e.target.id;
+    setQuestion((prevQuestion) => {
+      const prevOptions = [...prevQuestion.options];
+      prevOptions[id - 1] = e.target.value;
+      return { ...prevQuestion, options: prevOptions };
     });
   };
 
+  const deleteOption = (id) => {
+    setQuestion((prevQuestion) => ({
+      ...prevQuestion,
+      options: prevQuestion.options.filter((_, index) => index + 1 !== id),
+    }));
+  };
+
   const correctOptionHandler = (option) => {
-    setQuestion((prev) => {
-      return { ...prev, correctOption: option };
+    setQuestion((prevQuestion) => ({
+      ...prevQuestion,
+      correctOption: option,
+    }));
+  };
+
+  const getTestData = () => {
+    props.getTestData({
+      name,
+      hour: Math.floor(duration / 60),
+      minutes: duration % 60,
     });
   };
 
@@ -80,7 +89,7 @@ export default function CreateTestForm(props) {
       points: 0,
     });
     questionRef.current.value = "";
-    // pointsInputRef.current.value = "";
+    setShowQuestionForm(false);
   };
 
   const editQuestionHandler = () => {
@@ -99,14 +108,14 @@ export default function CreateTestForm(props) {
       points: 0,
     });
     questionRef.current.value = "";
-
-    // pointsInputRef.current.value = "";
+    setShowQuestionForm(false);
   };
 
   const pointsChangeHandler = () => {
-    setQuestion((prev) => {
-      return { ...prev, points: pointsInputRef.current.value };
-    });
+    setQuestion((prevQuestion) => ({
+      ...prevQuestion,
+      points: pointsInputRef.current.value,
+    }));
   };
 
   useEffect(() => {
@@ -116,50 +125,51 @@ export default function CreateTestForm(props) {
     }
   }, [props.editing, props.question]);
 
+  useEffect(() => {
+    if (props.test) {
+      setDuration(props.test.duration);
+    }
+  }, [props]);
   return (
     <form className="border m-2 p-2 w-1/3 h-max shadow-sm rounded-md bg-white">
-      {/* <h2 className="p-2 border-b">Edit Test</h2> */}
-      <div className=" flex flex-col justify-between border">
-        <div
-          onClick={() => setQuestionForm((prev) => !prev)}
-          className="flex flex-row justify-between p-2"
-        >
-          <div>Questions</div>
-          <div>
-            {!showQuestionForm && <KeyboardArrowDownIcon />}
-            {showQuestionForm && <KeyboardArrowUpIcon />}
-          </div>
-        </div>
-        {showQuestionForm && (
-          <div className=" border-t">
-            <div className="p-2 flex flex-row gap-2 w-full">
-              <span className="p-2 absolute flex items-center">Points:</span>
-              {!props.editing && (
-                <input
-                  onInput={pointsChangeHandler}
-                  ref={pointsInputRef}
-                  className="text-base  p-2 border w-full pl-16"
-                  type="number"
-                  name=""
-                  id=""
-                  defaultValue={question.points}
-                  min={0}
-                />
-              )}
-              {props.editing && (
-                <input
-                  onInput={pointsChangeHandler}
-                  ref={pointsInputRef}
-                  className="text-sm p-2 border w-full"
-                  type="number"
-                  name=""
-                  id=""
-                  defaultValue={question.points}
-                  min={0}
-                />
+      <div className="flex flex-col justify-between gap-2">
+        <input
+          onInput={(e) => setName(e.target.value)}
+          type="text"
+          defaultValue={props.test && props.test.name}
+          placeholder="Test Name"
+          className="p-1 rounded-sm bg-slate-50 border"
+        />
+
+        <div className="border rounded-md">
+          <div
+            onClick={() => setShowQuestionForm((prev) => !prev)}
+            className="flex flex-row justify-between p-2 border-b"
+          >
+            <div>Questions</div>
+            <div>
+              {!showQuestionForm ? (
+                <KeyboardArrowDownIcon />
+              ) : (
+                <KeyboardArrowUpIcon />
               )}
             </div>
-            {!props.editing && (
+          </div>
+          {(showQuestionForm || question.questionText != "") && (
+            <div className="border-t">
+              <div className="p-2 flex flex-row gap-2 w-full relative">
+                <span className="p-2 absolute flex items-center">Points:</span>
+                <input
+                  onInput={pointsChangeHandler}
+                  ref={pointsInputRef}
+                  className={`text-${
+                    props.editing ? "sm" : "base"
+                  } p-2 border w-full pl-16`}
+                  type="number"
+                  value={question.points}
+                  min={0}
+                />
+              </div>
               <textarea
                 ref={questionRef}
                 onInput={questionTextHandler}
@@ -167,33 +177,18 @@ export default function CreateTestForm(props) {
                 name="question"
                 id="question"
                 placeholder="Type your question here..."
-              ></textarea>
-            )}
-            {props.editing && (
-              <textarea
-                ref={questionRef}
-                onInput={questionTextHandler}
-                className="border w-[-webkit-fill-available] m-2 p-2"
-                name="question"
-                id="question"
-                placeholder="Type your question here..."
-                defaultValue={question.questionText}
-              ></textarea>
-            )}
-            {!props.editing &&
-              mode === "mcq" &&
-              question.options.map((q, index) => {
-                return (
+                value={question.questionText}
+              />
+              {mode === "mcq" &&
+                question.options.map((q, index) => (
                   <div className="w-full flex flex-row gap-2 p-2" key={index}>
                     <input
                       type="radio"
                       name="option"
-                      id="1"
+                      id={index + 1}
                       value={index + 1}
                       onChange={(e) => correctOptionHandler(e.target.value)}
-                      checked={
-                        index + 1 == question.correctOption ? true : false
-                      }
+                      checked={index + 1 == question.correctOption}
                     />
                     <input
                       onInput={editOptionHandler}
@@ -212,73 +207,86 @@ export default function CreateTestForm(props) {
                       <CloseIcon />
                     </button>
                   </div>
-                );
-              })}
-
-            {props.editing &&
-              mode === "mcq" &&
-              props.question &&
-              props.question.type == "mcq" &&
-              question.options.map((q, index) => {
-                return (
-                  <div className="w-full flex flex-row gap-2 p-2" key={index}>
-                    <input
-                      type="radio"
-                      name="option"
-                      id="1"
-                      defaultValue={index + 1}
-                      onChange={(e) => correctOptionHandler(e.target.value)}
-                      defaultChecked={
-                        index + 1 == props.question.correctOption ? true : false
-                      }
-                    />
-                    <input
-                      onInput={editOptionHandler}
-                      className="border w-full p-2"
-                      type="text"
-                      name="option-value"
-                      placeholder="Type the option here..."
-                      id={index + 1}
-                      defaultValue={q}
-                    />
-                    <button
-                      onClick={() => deleteOption(index + 1)}
-                      type="button"
-                      className="flex flex-row items-center text-red-400"
-                    >
-                      <CloseIcon />
-                    </button>
-                  </div>
-                );
-              })}
-
-            {mode === "mcq" && (
+                ))}
+              {mode === "mcq" && (
+                <button
+                  onClick={addOptionHandler}
+                  className="w-[-webkit-fill-available] m-2 p-2 bg-blue-500 text-white border rounded-md"
+                  type="button"
+                >
+                  Add Option
+                </button>
+              )}
               <button
-                onClick={addOptionHandler}
-                className="w-[-webkit-fill-available] m-2 p-2 bg-blue-500 text-white border rounded-md"
-                type="button"
-              >
-                Add Option
-              </button>
-            )}
-            {!props.editing && (
-              <button
-                onClick={addQuestionHandler}
+                onClick={
+                  props.editing ? editQuestionHandler : addQuestionHandler
+                }
                 type="button"
                 className="w-[-webkit-fill-available] m-2 p-2 bg-green-500 text-white rounded-md"
               >
-                Add Question
+                {props.editing ? "Edit Question" : "Add Question"}
               </button>
-            )}
-            {props.editing && (
+            </div>
+          )}
+        </div>
+
+        <div className="border rounded-md">
+          <div
+            onClick={() => setShowTimingForm((prev) => !prev)}
+            className="flex flex-row justify-between p-2 border-b"
+          >
+            <div>Timings</div>
+            <div>
+              {!showTimingForm ? (
+                <KeyboardArrowDownIcon />
+              ) : (
+                <KeyboardArrowUpIcon />
+              )}
+            </div>
+          </div>
+          {showTimingForm && !props.editing && (
+            <div className="flex flex-col p-2 gap-2 ">
+              <input
+                type="range"
+                min={0}
+                max={180}
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+              ></input>
+              <div className="gap-2 flex flex-row">
+                <span>{Math.floor(duration / 60)} Hours</span>
+                <span>{duration % 60} Minutes</span>
+              </div>
+            </div>
+          )}
+          {showTimingForm && props.editing && (
+            <div className="flex flex-col p-2 gap-2 ">
+              <input
+                type="range"
+                min={0}
+                max={180}
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+              ></input>
+              <div className="gap-2 flex flex-row">
+                <span>{Math.floor(duration / 60)} Hours</span>
+                <span>{duration % 60} Minutes</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {props.questions.length > 0 && (
+          <div className="flex flex-row w-full">
+            <div className="w-full">
               <button
-                onClick={editQuestionHandler}
+                onClick={getTestData}
                 type="button"
-                className="w-[-webkit-fill-available] m-2 p-2 bg-green-500 text-white rounded-md"
+                className="p-2 bg-green-500 text-white rounded-md w-full"
               >
-                Edit Question
+                {props.editing ? "Edit Test" : "Create Test"}
               </button>
-            )}
+            </div>
           </div>
         )}
       </div>

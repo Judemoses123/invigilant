@@ -11,7 +11,6 @@ export default async function (req, res) {
   await authenticate(req, res);
   try {
     const { testId } = req.query;
-    console.log(testId);
     const test = await Test.findById(testId);
     if (!test) {
       return res

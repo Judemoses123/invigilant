@@ -6,6 +6,9 @@ import { getCreatedTests } from "../utils/api/getCreatedTests";
 import { useDispatch } from "react-redux";
 import getUserAsync from "../store/asyncThunks/getUserAsync";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
+import * as React from "react";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import TestDashboard from "../components/testComponents/TestDashboard";
@@ -13,7 +16,7 @@ const dashboard = () => {
   const [createdTests, setCreatedTests] = useState([]);
   const dispatch = useDispatch();
   const [message, setMessage] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const copyToClipboard = (text) => {
     setMessage("Test Link Copied");
     setTimeout(() => {
@@ -30,10 +33,12 @@ const dashboard = () => {
 
   useEffect(() => {
     async function fetchTests() {
+      setLoading(true);
       dispatch(getUserAsync());
       const response = await getCreatedTests();
       console.log(response);
       setCreatedTests(response.createdTests);
+      setLoading(false);
     }
     fetchTests();
   }, []);
@@ -49,6 +54,7 @@ const dashboard = () => {
         <LeftNavbar location="dashboard" />
         <div className="w-[100%] h-full overflow-hidden">
           <TopNavbar location={"Dashboard"} />
+
           <div className="flex flex-col w-full overflow-y-auto gap-2 h-full">
             <div
               style={{ textShadow: "1px 1px 17px black" }}
@@ -79,11 +85,18 @@ const dashboard = () => {
                   <span>My Tests</span>
                   <Link href={"/my-tests"}>See More</Link>
                 </div>
-
+                {loading && (
+                  <div className="w-full text-sm flex items-center justify-center m-4">
+                    <Box sx={{ display: "flex" }}>
+                      <CircularProgress />
+                    </Box>
+                  </div>
+                )}
                 <TestDashboard
                   showOptions={false}
                   copyToClipboard={copyToClipboard}
                   createdTests={createdTests}
+                  size={3}
                 />
               </div>
             </div>

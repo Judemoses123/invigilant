@@ -17,17 +17,19 @@ import postPicture from "../../utils/api/postPicture";
 import postTabChanged from "../../utils/api/postTabChanged";
 import { FullScreen, useFullScreenHandle } from "react-full-screen";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
-
-
+import AuthForm from "../authComponents/AuthForm";
 import * as faceapi from "face-api.js";
 import getUserAsync from "../../store/asyncThunks/getUserAsync";
-
 
 const videoConstraints = {
   width: 1280,
   height: 720,
   facingMode: "user",
 };
+
+await faceapi.nets.tinyFaceDetector.loadFromUri(
+  "https://cdn.jsdelivr.net/gh/cgarciagl/face-api.js/weights/"
+);
 
 export default function Test(props) {
   useEffect(() => {}, [props.test]);
@@ -39,16 +41,13 @@ export default function Test(props) {
   const [started, setStarted] = useState(false);
   const [completed, setCompleted] = useState(false);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const [mode, setMode] = useState("login");
   const [error, setError] = useState("");
   const [flags, setFlags] = useState(0);
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
   const webcamRef = useRef();
 
-  const nameInputRef = useRef();
-  const emailInputRef = useRef();
-  const passwordInputRef = useRef();
+  const [loading, setLoading] = useState(false);
 
   const testContainerRef = useRef();
 
@@ -61,60 +60,38 @@ export default function Test(props) {
     }
   }, [isLoggedIn]);
 
-  const signupHandler = async () => {
-    const signupData = {
-      name: nameInputRef.current.value,
-      email: emailInputRef.current.value,
-      password: passwordInputRef.current.value,
-    };
-    console.log(signupData);
-    const response = await dispatch(signupAsync(signupData));
-    console.log(response);
-  };
-  const loginHandler = async () => {
-    const loginData = {
-      email: emailInputRef.current.value,
-      password: passwordInputRef.current.value,
-    };
-    console.log(loginData);
-    const response = await dispatch(loginAsync(loginData));
-    console.log(response);
-  };
-
-  const toggleMode = () => {
-    setMode((prev) => {
-      if (prev === "login") return "signup";
-      return "login";
-    });
-  };
-
-  const capture = async () => {
-    const imageSrc = webcamRef.current ? webcamRef.current.getScreenshot() : "";
-    if (!!imageSrc) {
-      const response = await postPicture(imageSrc, props.test._id);
-      if (!!response) {
-        return response;
-      }
-      return {
-        status: "failed",
-      };
-    }
-    return {
-      status: "failed",
-    };
-  };
-
   useEffect(() => {
-    if (isLoggedIn && !!props.test) {
-      setInterval(async () => {
-        if (isLoggedIn && !!props.test && !completed) {
-          const response = await capture();
-          if (!!response && response.status == "success") {
-            setFlags(response.flags);
+    async function func() {
+      if (isLoggedIn && !!props.test) {
+        setInterval(async () => {
+          if (isLoggedIn && !!props.test && !completed) {
+            const input = document.getElementById("webcam");
+            if (!!input) {
+              const detections = await faceapi.detectAllFaces(
+                input,
+                new faceapi.TinyFaceDetectorOptions({
+                  inputSize: 320,
+                  scoreThreshold: 0.5,
+                })
+              );
+              console.log(detections.length);
+              if (detections.length != 1) {
+                const imageSrc = webcamRef.current
+                  ? webcamRef.current.getScreenshot()
+                  : null;
+                if (!!imageSrc) {
+                  const response = await postPicture(imageSrc, props.test._id);
+                  if (!!response && response.status == "success") {
+                    setFlags((prev) => Math.max(prev, response.flags));
+                  }
+                }
+              }
+            }
           }
-        }
-      }, 5000);
+        }, 5000);
+      }
     }
+    func();
   }, [isLoggedIn, props.test]);
 
   useEffect(() => {
@@ -173,6 +150,7 @@ export default function Test(props) {
   };
 
   const startTestHandler = async () => {
+    setLoading(true);
     if (!!props.test) {
       console.log(props.test);
       const response = await startTest(props.test._id);
@@ -180,12 +158,12 @@ export default function Test(props) {
         setStarted(true);
         goFullScreen();
       } else {
-        // setError(response.message);
         setTimeout(() => {
           setError("");
         }, 5000);
       }
     }
+    setLoading(false);
   };
   const submitHandler = async () => {
     setShowModal(false);
@@ -222,18 +200,6 @@ export default function Test(props) {
     } else if (element.msRequestFullscreen) {
       element.msRequestFullscreen();
     }
-    // } else {
-    //   // Exit fullscreen mode if necessary
-    //   if (document.exitFullscreen) {
-    //     document.exitFullscreen();
-    //   } else if (document.mozCancelFullScreen) {
-    //     document.mozCancelFullScreen();
-    //   } else if (document.webkitExitFullscreen) {
-    //     document.webkitExitFullscreen();
-    //   } else if (document.msExitFullscreen) {
-    //     document.msExitFullscreen();
-    //   }
-    // }
   };
 
   useEffect(() => {
@@ -242,7 +208,6 @@ export default function Test(props) {
       document.mozFullScreen ||
       document.webkitIsFullScreen ||
       document.msFullscreenElement;
-    console.log(isFullscreen);
   }, []);
 
   return (
@@ -273,79 +238,8 @@ export default function Test(props) {
           <div
             className={` h-full  flex flex-col items-center justify-start w-full `}
           >
-            <div className="bg-slate-50 w-full h-full flex flex-col items-center justify-center">
-              <form className="flex flex-col gap-8 w-[30%] m-auto">
-                {mode === "signup" && (
-                  <div className="flex flex-row justify-between w-full relative items-center">
-                    <PersonOutlineIcon className="absolute m-4" />
-                    <label
-                      className=" font-bold absolute top-[-15%] bg-white ml-4 text-xs text-[#0094c1]"
-                      htmlFor="text"
-                    >
-                      Name
-                    </label>
-                    <input
-                      ref={nameInputRef}
-                      name="text"
-                      type="text"
-                      placeholder="Enter your name"
-                      className="rounded-xl  h-min bg-[white] border-[#0094c1] border-[1.5px] w-full p-3 pl-14 active:bg-white focus:bg-white active:border-[#4682b4]"
-                    />
-                  </div>
-                )}
-                <div className="flex flex-row justify-between w-full relative items-center">
-                  <EmailOutlinedIcon className="absolute m-4" />
-                  <label
-                    className=" font-bold absolute top-[-15%] bg-white ml-4 text-[0.65rem] text-[#0094c1]"
-                    htmlFor="email"
-                  >
-                    Email Id
-                  </label>
-                  <input
-                    ref={emailInputRef}
-                    name="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    className="rounded-xl  h-min bg-[white] border-[#0094c1] border-[1.5px] w-full p-3 pl-14 active:bg-white focus:bg-white active:border-[#4682b4]"
-                  />
-                </div>
-                <div className="flex flex-row justify-between w-full relative items-center">
-                  <HttpsOutlinedIcon className="absolute m-4" />
-                  <label
-                    className=" font-bold absolute top-[-15%] bg-white ml-4 text-xs text-[#0094c1]"
-                    htmlFor="password"
-                  >
-                    Password
-                  </label>
-                  <input
-                    ref={passwordInputRef}
-                    name="password"
-                    type="password"
-                    placeholder="Enter your password"
-                    className="rounded-xl  h-min bg-white border-[#0094c1] border-[1.5px] w-full p-3 pl-14 active:bg-white focus:bg-white"
-                  />
-                </div>
-                {mode === "login" && (
-                  <div className="text-slate-600 text-sm text-right">
-                    forgot your password?
-                  </div>
-                )}
-                <button
-                  onClick={mode === "login" ? loginHandler : signupHandler}
-                  type="button"
-                  className="bg-[#0094c1] p-4 rounded-xl h-min mt-1 text-white hover:bg-[#0094c1] font-bold"
-                >
-                  {mode === "login" ? "LOGIN" : "SIGNUP"}
-                </button>
-                <div
-                  onClick={toggleMode}
-                  className="text-center hover:font-bold"
-                >
-                  {mode === "login"
-                    ? `Don't have an account? Signup Now`
-                    : `Have an existing account? Login Now`}
-                </div>
-              </form>
+            <div className="bg-slate-50 w-full ">
+              <AuthForm redirect={false} />
             </div>
           </div>
         </div>
@@ -362,7 +256,7 @@ export default function Test(props) {
                 onClick={() => setShowOverlay((prev) => !prev)}
                 className=" w-full flex justify-between flex-row text-2xl font-bold text-slate-500[white] italic items-center p-2 pl-1"
               >
-                <span className="pl-4">Invigilant</span>
+                <span className="">Invigilant</span>
                 <MenuOpenIcon />
               </div>
             </div>
@@ -462,6 +356,7 @@ export default function Test(props) {
                 mirrored={true}
                 screenshotFormat="image/jpeg"
                 ref={webcamRef}
+                id="webcam"
                 screenshotQuality={0.3}
                 minScreenshotHeight={320}
                 minScreenshotWidth={720}
@@ -492,6 +387,13 @@ export default function Test(props) {
               showOverlay ? "w-4/5" : "w-full"
             }`}
           >
+            {loading && (
+              <div className="w-full text-sm flex items-center justify-center m-4">
+                <Box sx={{ display: "flex" }}>
+                  <CircularProgress />
+                </Box>
+              </div>
+            )}
             {props.test && props.test.questions.length > 0 && (
               <div className="font-bold p-2 border-b w-full justify-between flex flex-row sticky top-0 bg-white shadow-sm">
                 <div className="flex items-center align-middle">

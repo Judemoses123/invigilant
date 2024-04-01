@@ -36,5 +36,8 @@ const userSchema = new Schema({
       score: Number,
     },
   ],
+  otp: {
+    type: String,
+  },
 });
 export default mongoose.models.User || mongoose.model("User", userSchema);

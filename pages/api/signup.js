@@ -15,7 +15,7 @@ export default async function signup(req, res) {
   if (!name || !email || !password) {
     return res
       .status(401)
-      .json({ message: "invalid inuput", status: "failed" });
+      .json({ message: "invalid input", status: "failed" });
   }
 
   const existingUser = await User.findOne({ email: email });
